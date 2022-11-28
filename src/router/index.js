@@ -6,6 +6,7 @@ const withdrawalRoutes = require('./api/v1/withdrawal.routes')
 const contactUsRoutes = require('./api/v1/contactUs.routes')
 const adminRoutes = require('./api/v1/admin.routes')
 const websitesRouters = require('./api/v1/website.routes')
+const popularWebsitesRouters = require('./api/v1/popularWebsites.routes')
 const routes = Router();
 routes.use('/users', usersRoutes);
 routes.use('/products', productsRoutes);
@@ -14,5 +15,6 @@ routes.use('/admin', adminRoutes);
 routes.use('/user', withdrawalRoutes);
 routes.use('/contact-us', contactUsRoutes);
 routes.use('/websites', websitesRouters);
+routes.use('/popular-websites', popularWebsitesRouters);
 
 module.exports = routes;

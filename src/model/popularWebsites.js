@@ -23,7 +23,7 @@ const PopularWebsitesModel = Schema({
       required: true,
       trim: true,
     },
-    logoUrl: {
+    imageUrl: {
       type: String,
       required: true,
       trim: true,

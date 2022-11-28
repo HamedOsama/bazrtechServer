@@ -15,6 +15,7 @@ const Order = require('../model/order');
 const Withdrawal = require('../model/withdrawal');
 const { uploadToS3 } = require('../utils/uploadPhoto');
 const Website = require('../model/websites');
+const PopularWebsites = require('../model/popularWebsites');
 const { sendgridApiKey, sendgridEmail } = config;
 
 const addAdmin = async (req, res, next) => {
@@ -572,6 +573,78 @@ const deleteWebsite = async(req,res,next)=>{
   }
 }
 
+// popular websites
+const addPopularWebsite = async (req, res, next) => {
+  try {
+    const website = new PopularWebsites(req.body);
+    await website.save();
+    res.status(201).json({
+      ok: true,
+      code: 201,
+      message: 'succeeded',
+      data: website,
+    });
+  } catch (e) {
+    e.statusCode = 400;
+    next(e);
+  }
+};
+const getAllPopularWebsites = async(req,res,next)=>{
+  try {
+    const websites = await ApiFeatures.pagination(PopularWebsites.find({}) , req.query);
+    const totalLength = await PopularWebsites.countDocuments();
+    res.status(200).json({
+      ok: true,
+      code: 200,
+      message: 'succeeded',
+      data: websites,
+      totalLength,
+    });
+  } catch (e) {
+    e.statusCode = 400;
+    next(e);
+  }
+}
+const updatePopularWebsite = async(req,res,next)=>{
+  try {
+    const id = req.params.id;
+    if(!id)
+    return next(ServerError.badRequest(400, 'send an id'));
+    const website  = await PopularWebsites.findByIdAndUpdate(id,req.body,{
+      runValidators : true,
+      new : true
+    });
+    if (!website)
+    return next(ServerError.badRequest(400, 'enter valid id'));
+    res.status(200).json({
+      ok : true,
+      status : 204,
+      message : 'website has been updated successfully',
+      data : website
+    })
+  } catch (e) {
+    e.statusCode = 400;
+    next(e);
+  }
+}
+const deletePopularWebsite = async(req,res,next)=>{
+  try {
+    const id = req.params.id;
+    if(!id)
+    return next(ServerError.badRequest(400, 'send an id'));
+    const deletedWebsite  = await PopularWebsites.findByIdAndDelete(id);
+    if (!deletedWebsite)
+    return next(ServerError.badRequest(400, 'enter valid id'));
+    res.status(204).json({
+      ok : true,
+      status : 204,
+      message : 'website has been deleted successfully'
+    })
+  } catch (e) {
+    e.statusCode = 400;
+    next(e);
+  }
+}
 
 
 
@@ -1510,4 +1583,8 @@ module.exports = {
 getAllWebsites,
 updateWebsite,
 deleteWebsite,
+addPopularWebsite,
+getAllPopularWebsites,
+updatePopularWebsite,
+deletePopularWebsite,
 };
