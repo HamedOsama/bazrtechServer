@@ -2,6 +2,11 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 const timestamps = require('mongoose-timestamp')
 const contactUs = mongoose.Schema({
+  title : {
+    type: String,
+    required: true,
+    trim: true,
+  },
   name: {
     type: String,
     required: true,
@@ -25,7 +30,9 @@ const contactUs = mongoose.Schema({
     }
   },
   message: {
-    type: String
+    type: String,
+    required: true,
+    trim: true,
   },
   state: {
     type: Number,
