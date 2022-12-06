@@ -16,6 +16,7 @@ const Withdrawal = require('../model/withdrawal');
 const { uploadToS3 } = require('../utils/uploadPhoto');
 const Website = require('../model/websites');
 const PopularWebsites = require('../model/popularWebsites');
+const Offer = require('../model/offer');
 const { sendgridApiKey, sendgridEmail } = config;
 
 const addAdmin = async (req, res, next) => {
@@ -39,8 +40,8 @@ const addAdmin = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const admin = await Admin.logIn(req.body.email, req.body.password);
-        const token = await admin.getToken();
-            res.status(200).json({
+    const token = await admin.getToken();
+    res.status(200).json({
       ok: true,
       code: 200,
       message: 'succeeded',
@@ -49,32 +50,32 @@ const login = async (req, res, next) => {
       },
       token,
     });
-  //   {
+    //   {
 
-  //   // const random = Str.random(10);
-  //   // await admin.updateOne({ LoginCode: random });
-  //   // console.log(sendgridApiKey);
-  //   // sendgrid.setApiKey(sendgridApiKey);
-  //   // const data = {
-  //   //   to: req.body.email,
-  //   //   from: sendgridEmail,
-  //   //   subject: 'verify with this',
-  //   //   html: ` <p>${random}</p> `,
-  //   // };
-  //   // sendgrid
-  //   //   .send(data)
-  //   //   .then((response) => {
-  //   //     res.status(200).json({
-  //   //       ok: true,
-  //   //       code: 200,
-  //   //       message: 'succeeded',
-  //   //       data: 'code has been sent to your email',
-  //   //     });
-  //   //   })
-  //   //   .catch((error) => {
-  //   //     return next(ServerError.badRequest(401, error.message));
-  //   //   });
-  // }
+    //   // const random = Str.random(10);
+    //   // await admin.updateOne({ LoginCode: random });
+    //   // console.log(sendgridApiKey);
+    //   // sendgrid.setApiKey(sendgridApiKey);
+    //   // const data = {
+    //   //   to: req.body.email,
+    //   //   from: sendgridEmail,
+    //   //   subject: 'verify with this',
+    //   //   html: ` <p>${random}</p> `,
+    //   // };
+    //   // sendgrid
+    //   //   .send(data)
+    //   //   .then((response) => {
+    //   //     res.status(200).json({
+    //   //       ok: true,
+    //   //       code: 200,
+    //   //       message: 'succeeded',
+    //   //       data: 'code has been sent to your email',
+    //   //     });
+    //   //   })
+    //   //   .catch((error) => {
+    //   //     return next(ServerError.badRequest(401, error.message));
+    //   //   });
+    // }
   } catch (e) {
     e.statusCode = 401;
     next(e);
@@ -516,9 +517,9 @@ const addWebsite = async (req, res, next) => {
     next(e);
   }
 };
-const getAllWebsites = async(req,res,next)=>{
+const getAllWebsites = async (req, res, next) => {
   try {
-    const websites = await ApiFeatures.pagination(Website.find({}) , req.query);
+    const websites = await ApiFeatures.pagination(Website.find({}), req.query);
     const totalLength = await Website.countDocuments();
     res.status(200).json({
       ok: true,
@@ -532,40 +533,40 @@ const getAllWebsites = async(req,res,next)=>{
     next(e);
   }
 }
-const updateWebsite = async(req,res,next)=>{
+const updateWebsite = async (req, res, next) => {
   try {
     const id = req.params.id;
-    if(!id)
-    return next(ServerError.badRequest(400, 'send an id'));
-    const website  = await Website.findByIdAndUpdate(id,req.body,{
-      runValidators : true,
-      new : true
+    if (!id)
+      return next(ServerError.badRequest(400, 'send an id'));
+    const website = await Website.findByIdAndUpdate(id, req.body, {
+      runValidators: true,
+      new: true
     });
     if (!website)
-    return next(ServerError.badRequest(400, 'enter valid id'));
+      return next(ServerError.badRequest(400, 'enter valid id'));
     res.status(200).json({
-      ok : true,
-      status : 204,
-      message : 'website has been updated successfully',
-      data : website
+      ok: true,
+      status: 204,
+      message: 'website has been updated successfully',
+      data: website
     })
   } catch (e) {
     e.statusCode = 400;
     next(e);
   }
 }
-const deleteWebsite = async(req,res,next)=>{
+const deleteWebsite = async (req, res, next) => {
   try {
     const id = req.params.id;
-    if(!id)
-    return next(ServerError.badRequest(400, 'send an id'));
-    const deletedWebsite  = await Website.findByIdAndDelete(id);
+    if (!id)
+      return next(ServerError.badRequest(400, 'send an id'));
+    const deletedWebsite = await Website.findByIdAndDelete(id);
     if (!deletedWebsite)
-    return next(ServerError.badRequest(400, 'enter valid id'));
+      return next(ServerError.badRequest(400, 'enter valid id'));
     res.status(204).json({
-      ok : true,
-      status : 204,
-      message : 'website has been deleted successfully'
+      ok: true,
+      status: 204,
+      message: 'website has been deleted successfully'
     })
   } catch (e) {
     e.statusCode = 400;
@@ -589,9 +590,9 @@ const addPopularWebsite = async (req, res, next) => {
     next(e);
   }
 };
-const getAllPopularWebsites = async(req,res,next)=>{
+const getAllPopularWebsites = async (req, res, next) => {
   try {
-    const websites = await ApiFeatures.pagination(PopularWebsites.find({}) , req.query);
+    const websites = await ApiFeatures.pagination(PopularWebsites.find({}), req.query);
     const totalLength = await PopularWebsites.countDocuments();
     res.status(200).json({
       ok: true,
@@ -605,40 +606,40 @@ const getAllPopularWebsites = async(req,res,next)=>{
     next(e);
   }
 }
-const updatePopularWebsite = async(req,res,next)=>{
+const updatePopularWebsite = async (req, res, next) => {
   try {
     const id = req.params.id;
-    if(!id)
-    return next(ServerError.badRequest(400, 'send an id'));
-    const website  = await PopularWebsites.findByIdAndUpdate(id,req.body,{
-      runValidators : true,
-      new : true
+    if (!id)
+      return next(ServerError.badRequest(400, 'send an id'));
+    const website = await PopularWebsites.findByIdAndUpdate(id, req.body, {
+      runValidators: true,
+      new: true
     });
     if (!website)
-    return next(ServerError.badRequest(400, 'enter valid id'));
+      return next(ServerError.badRequest(400, 'enter valid id'));
     res.status(200).json({
-      ok : true,
-      status : 204,
-      message : 'website has been updated successfully',
-      data : website
+      ok: true,
+      status: 204,
+      message: 'website has been updated successfully',
+      data: website
     })
   } catch (e) {
     e.statusCode = 400;
     next(e);
   }
 }
-const deletePopularWebsite = async(req,res,next)=>{
+const deletePopularWebsite = async (req, res, next) => {
   try {
     const id = req.params.id;
-    if(!id)
-    return next(ServerError.badRequest(400, 'send an id'));
-    const deletedWebsite  = await PopularWebsites.findByIdAndDelete(id);
+    if (!id)
+      return next(ServerError.badRequest(400, 'send an id'));
+    const deletedWebsite = await PopularWebsites.findByIdAndDelete(id);
     if (!deletedWebsite)
-    return next(ServerError.badRequest(400, 'enter valid id'));
+      return next(ServerError.badRequest(400, 'enter valid id'));
     res.status(204).json({
-      ok : true,
-      status : 204,
-      message : 'website has been deleted successfully'
+      ok: true,
+      status: 204,
+      message: 'website has been deleted successfully'
     })
   } catch (e) {
     e.statusCode = 400;
@@ -654,8 +655,8 @@ const deletePopularWebsite = async(req,res,next)=>{
 
 const addProduct = async (req, res, next) => {
   try {
-    if(req?.body?.image <= 1 || !req.body.image )
-    return next(ServerError.badRequest(400, 'add one image at least'));
+    if (req?.body?.image <= 1 || !req.body.image)
+      return next(ServerError.badRequest(400, 'add one image at least'));
     const product = new Product(req.body);
     const sum = product.properties.reduce((accumulator, object) => {
       return accumulator + object.amount;
@@ -1540,6 +1541,49 @@ const updateContact = async (req, res, next) => {
     next(e);
   }
 };
+
+
+const getAllOffers = async (req, res, next) => {
+  try {
+    const offers = await ApiFeatures.pagination(Offer.find({}).sort({ createdAt: -1 }), req.query);
+    const totalLength = await Offer.countDocuments({});
+    res.status(200).json({
+      ok: true,
+      code: 200,
+      message: 'succeeded',
+      data: offers,
+      totalLength,
+    });
+  } catch (e) {
+    next(e)
+  }
+}
+const addOffer = async (req, res, next) => {
+  try {
+    const offer = await Offer.create(req.body);
+    res.status(201).json({
+      ok: true,
+      code: 201,
+      message: 'succeeded',
+      data: offer,
+    })
+  } catch (e) {
+    next(e);
+  }
+}
+const deleteOffer = async (req, res, next) => {
+  const id = req.params.id;
+  if (!id)
+    return next(ServerError.badRequest(400, 'id is required'));
+  const offer = await Offer.findByIdAndDelete(id);
+  if (!offer)
+    return next(ServerError.badRequest(400, 'id is not valid'));
+  res.status(204).json({
+    ok: true,
+    status: 204,
+    message: 'Offer has been deleted successfully'
+  })
+}
 module.exports = {
   addAdmin,
   getAdminData,
@@ -1580,11 +1624,14 @@ module.exports = {
   getClosedContacts,
   updateContact,
   addWebsite,
-getAllWebsites,
-updateWebsite,
-deleteWebsite,
-addPopularWebsite,
-getAllPopularWebsites,
-updatePopularWebsite,
-deletePopularWebsite,
+  getAllWebsites,
+  updateWebsite,
+  deleteWebsite,
+  addPopularWebsite,
+  getAllPopularWebsites,
+  updatePopularWebsite,
+  deletePopularWebsite,
+  getAllOffers,
+  addOffer,
+  deleteOffer,
 };

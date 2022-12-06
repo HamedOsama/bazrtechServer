@@ -2,7 +2,7 @@ const express = require('express')
 const routes = express.Router()
 const adminController = require('../../../controllers/admin.controller')
 const auth = require('../../../middleware/adminAuth')
-const {Uploads} = require('../../../utils/uploadPhoto')
+const { Uploads } = require('../../../utils/uploadPhoto')
 
 // routes do not need for authentication
 routes.route('/login').post(adminController.login)
@@ -68,22 +68,22 @@ routes.route('/contact-us/:id').patch(auth, adminController.updateContact)
 
 // websites
 routes.route('/websites')
-.get(auth, adminController.getAllWebsites)
-.post(auth , adminController.addWebsite)
+  .get(auth, adminController.getAllWebsites)
+  .post(auth, adminController.addWebsite)
 routes.route('/websites/:id')
-.patch(auth , adminController.updateWebsite)
-.delete(auth , adminController.deleteWebsite);
+  .patch(auth, adminController.updateWebsite)
+  .delete(auth, adminController.deleteWebsite);
 // /api/v1/admin/websites (get) get all websites
 // /api/v1/admin/websites (post) add website
 // /api/v1/admin/websites/:id (patch) update website
 // /api/v1/admin/websites/:id (delete) delete website
 // popular websites
 routes.route('/popular-websites')
-.get(auth, adminController.getAllPopularWebsites)
-.post(auth , adminController.addPopularWebsite)
+  .get(auth, adminController.getAllPopularWebsites)
+  .post(auth, adminController.addPopularWebsite)
 routes.route('/popular-websites/:id')
-.patch(auth , adminController.updatePopularWebsite)
-.delete(auth , adminController.deletePopularWebsite);
+  .patch(auth, adminController.updatePopularWebsite)
+  .delete(auth, adminController.deletePopularWebsite);
 
 // /api/v1/admin/popular-websites (get) get all popular-websites
 // /api/v1/admin/popular-websites (post) add popular-website
@@ -91,4 +91,14 @@ routes.route('/popular-websites/:id')
 // /api/v1/admin/popular-websites/:id (delete) delete popular-website
 
 
+//offers
+
+routes.route('/offers')
+  .get(auth, adminController.getAllOffers)
+  .post(auth, adminController.addOffer)
+routes.route('/offers/:id').delete(auth, adminController.deleteOffer)
+
+// /api/v1/admin/offers (get) get all offers
+// /api/v1/admin/offers (post) add offer
+// /api/v1/admin/offers/:id (delete) delete offer
 module.exports = routes
