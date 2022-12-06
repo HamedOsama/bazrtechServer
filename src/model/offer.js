@@ -18,13 +18,13 @@ const OfferModel = mongoose.Schema({
   },
   code: {
     type: String,
+    unique: true,
     required: true,
     trim: true,
   },
   discountAmount : {
     type : Number,
     required : true,
-    unique: true
   }
 })
 OfferModel.plugin(timestamps)
