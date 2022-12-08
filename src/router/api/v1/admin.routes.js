@@ -110,7 +110,12 @@ routes.route('/shipping')
   .post(auth, adminController.addShippingMethod)
 
 routes.route('/shipping/:id')
-  .update(auth, adminController.updateShipping)
+  .patch(auth, adminController.updateShipping)
   .delete(auth, adminController.deleteShipping)
+
+// /api/v1/admin/shipping (get) get all shipping
+// /api/v1/admin/shipping (post) add shipping
+// /api/v1/admin/shipping/:id (patch) update shipping
+// /api/v1/admin/shipping/:id (delete) delete shipping
 
 module.exports = routes
