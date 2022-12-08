@@ -20,8 +20,8 @@ routes.route('/logout-all').delete(auth, adminController.logoutAllDevices)
 //users
 routes.route('/users/add').post(auth, adminController.addUser)
 routes.route('/users/user/:id')
-.get(auth, adminController.getUserById)
-.patch(auth , adminController.updateUser)
+  .get(auth, adminController.getUserById)
+  .patch(auth, adminController.updateUser)
 routes.route('/users/phone/:phone').get(auth, adminController.getUserByPhoneNumber)
 routes.route('/users/all').get(auth, adminController.getAllUsers)
 routes.route('/users/logout/:id').delete(auth, adminController.logoutUserFromAllDevices)
@@ -103,4 +103,14 @@ routes.route('/offers/:id').delete(auth, adminController.deleteOffer)
 // /api/v1/admin/offers (get) get all offers
 // /api/v1/admin/offers (post) add offer
 // /api/v1/admin/offers/:id (delete) delete offer
+
+// shipping 
+routes.route('/shipping')
+  .get(auth, adminController.getAllShippings)
+  .post(auth, adminController.addShippingMethod)
+
+routes.route('/shipping/:id')
+  .update(auth, adminController.updateShipping)
+  .delete(auth, adminController.deleteShipping)
+
 module.exports = routes

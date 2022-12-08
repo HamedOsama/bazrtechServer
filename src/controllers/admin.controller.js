@@ -17,6 +17,7 @@ const { uploadToS3 } = require('../utils/uploadPhoto');
 const Website = require('../model/websites');
 const PopularWebsites = require('../model/popularWebsites');
 const Offer = require('../model/offer');
+const Shipping = require('../model/shipping');
 const { sendgridApiKey, sendgridEmail } = config;
 
 const addAdmin = async (req, res, next) => {
@@ -1584,6 +1585,68 @@ const deleteOffer = async (req, res, next) => {
     message: 'Offer has been deleted successfully'
   })
 }
+const getAllShippings = async (req, res, next) => {
+  try {
+    const shippings = await ApiFeatures.pagination(Shipping.find({}).sort({ createdAt: -1 }), req.query);
+    const totalLength = await Shipping.countDocuments({});
+    res.status(200).json({
+      ok: true,
+      code: 200,
+      message: 'succeeded',
+      data: shippings,
+      totalLength,
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+const addShippingMethod = async (req, res, next) => {
+  try {
+    const shipping = await Shipping.create(req.body)
+    res.status(201).json({
+      ok: true,
+      status: 201,
+      message: 'succeeded',
+      shipping
+    })
+  } catch (e) {
+    next(e);
+  }
+}
+const updateShipping = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    if (!id)
+      return next(ServerError.badRequest(400, 'id is required'));
+    const shipping = await Shipping.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    })
+    if (!shipping)
+      return next(ServerError.badRequest(400, 'id is not valid'));
+    res.status(200).json({
+      ok: true,
+      status: 200,
+      message: 'succeeded',
+      shipping
+    })
+  } catch (e) {
+    next(e)
+  }
+}
+const deleteShipping = async (req, res, next) => {
+  const id = req.params.id;
+  if (!id)
+    return next(ServerError.badRequest(400, 'id is required'));
+  const shipping = await Shipping.findByIdAndDelete(id);
+  if (!shipping)
+    return next(ServerError.badRequest(400, 'id is not valid'));
+  res.status(204).json({
+    ok: true,
+    status: 204,
+    message: 'Shipping has been deleted successfully'
+  })
+}
 module.exports = {
   addAdmin,
   getAdminData,
@@ -1634,4 +1697,10 @@ module.exports = {
   getAllOffers,
   addOffer,
   deleteOffer,
+  getAllShippings,
+  addShippingMethod,
+  updateShipping,
+  deleteShipping,
+
+
 };
