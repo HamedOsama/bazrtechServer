@@ -6,7 +6,7 @@ const calculateShipping = async (req, res, next) => {
     const { country, price, category, weight } = req.body;
     if (!country || !price || !category || !weight)
       return next(ServerError.badRequest(400, 'جميع الحقول مطلوبة'));
-    const shippingData = Shipping.findOne({ country });
+    const shippingData = await  Shipping.findOne({ country });
     if (!shippingData)
       return next(ServerError.badRequest(400, 'غير متوفر شحن لهذه المنطقة'));
     const multiply = ['accessories', 'shoes', 'bags', 'electronics', 'homeApplicants', 'furniture']

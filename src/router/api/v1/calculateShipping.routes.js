@@ -6,5 +6,7 @@ const routes = Router();
 
 routes.route('/').post(calculatorController.calculateShipping);
 
-
+// api/v1/calculate {
+//  country ,price ,category,weight
+//}
 module.exports = routes
