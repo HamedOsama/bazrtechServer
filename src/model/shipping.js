@@ -109,37 +109,32 @@ const ShippingSchema = mongoose.Schema({
     half : {
       type : Number,
       required : true,
-      default : 35
+      default : 30
     },
     one : {
       type : Number,
       required : true,
-      default : 45
+      default : 40
     },
     two : {
       type : Number,
       required : true,
-      default : 80
+      default : 70
     },
     three : {
       type : Number,
       required : true,
-      default : 110
+      default : 90
     },
     four : {
       type : Number,
       required : true,
-      default : 120
+      default : 100
     },
     five : {
       type : Number,
       required : true,
-      default : 140
-    },
-    six : {
-      type : Number,
-      required : true,
-      default : 30
+      default : 20
     },
   },
   iron:{

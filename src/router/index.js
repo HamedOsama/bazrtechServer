@@ -8,6 +8,7 @@ const adminRoutes = require('./api/v1/admin.routes')
 const websitesRouters = require('./api/v1/website.routes')
 const popularWebsitesRouters = require('./api/v1/popularWebsites.routes')
 const offersRouters = require('./api/v1/offers.routes')
+const calculatorRouters = require('./api/v1/calculateShipping.routes')
 const routes = Router();
 routes.use('/users', usersRoutes);
 routes.use('/products', productsRoutes);
@@ -18,5 +19,6 @@ routes.use('/contact-us', contactUsRoutes);
 routes.use('/websites', websitesRouters);
 routes.use('/popular-websites', popularWebsitesRouters);
 routes.use('/offers', offersRouters);
+routes.use('/calculate' , calculatorRouters)
 
 module.exports = routes;
