@@ -12,7 +12,7 @@ const calculateShipping = async (req, res, next) => {
     const multiply = ['accessories', 'shoes', 'bags', 'electronics', 'homeApplicants', 'furniture']
     let total = 0
     if (multiply.includes(category)) {
-      total = price + shippingData[category];
+      total = price +  shippingData[category];
     }
     if (category === 'clothes') {
       if (weight > 0 && weight < 1)
@@ -24,9 +24,9 @@ const calculateShipping = async (req, res, next) => {
       if (weight >= 3 && weight < 4)
         total = price + shippingData.clothes.four
       if (weight >= 4 && weight < 10)
-        total = weight * shippingData.clothes.five
+        total = price +  (weight * shippingData.clothes.five)
       if (weight >= 10)
-        total = weight * shippingData.clothes.six
+        total = price + ( weight * shippingData.clothes.six)
     }
     if (category === 'makeUp') {
       if (weight > 0 && weight < 0.5)
@@ -42,7 +42,7 @@ const calculateShipping = async (req, res, next) => {
       if (weight >= 4 && weight < 5)
         total = price + shippingData.makeUp.five
       if (weight >= 10)
-        total = weight * shippingData.makeUp.six
+        total = price +  (weight * shippingData.makeUp.six)
     }
     if (category === 'foodSupplements') {
       if (weight > 0 && weight < 0.5)
@@ -66,11 +66,11 @@ const calculateShipping = async (req, res, next) => {
       if (weight >= 2 && weight < 3)
         total = price + shippingData.iron.three
       if (weight >= 3 && weight < 5)
-        total = weight * shippingData.iron.four
+        total =  price +  (weight * shippingData.iron.four)
       if (weight >= 5 && weight < 10)
-        total = weight * shippingData.iron.five
+        total = price +  (weight * shippingData.iron.five)
       if (weight >= 10)
-        total = weight * shippingData.iron.six
+        total = price +  (weight * shippingData.iron.six)
     }
     if (category === 'other') {
       if (weight > 0 && weight < 1)
@@ -82,9 +82,9 @@ const calculateShipping = async (req, res, next) => {
       if (weight >= 3 && weight < 5)
         total = price + shippingData.other.four
       if (weight >= 5 && weight < 10)
-        total = weight * shippingData.other.five
+        total =  price + (weight * shippingData.other.five)
       if (weight >= 10)
-        total = weight * shippingData.other.six
+        total = price +  (weight * shippingData.other.six)
     }
     res.status(200).json({
       ok : true,
