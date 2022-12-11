@@ -39,11 +39,15 @@ routes.route('/users/logout/:id').delete(auth, adminController.logoutUserFromAll
 
 // order routes
 // routes.route('/order/add').post(auth, adminController.createOrder);
-// routes.route('/order/all').get(auth, adminController.getAllOrders);
-// routes.route('/order/:id').patch(auth, adminController.updateOrder);
+routes.route('/orders').get(auth, adminController.getAllOrders);
+routes.route('/order/:id').patch(auth, adminController.updateOrder);
 // routes.route('/order/id/:id').get(auth, adminController.getOrder);
 // routes.route('/order/seller/:id').get(auth, adminController.getOrdersBySellerId);
 // routes.route('/order/buyer/:id').get(auth, adminController.getOrdersByBuyerId);
+
+
+//api/v1/admin/orders (get) get all orders
+//api/v1/admin/orders/:id (patch) update order
 
 
 // change buffer to photo

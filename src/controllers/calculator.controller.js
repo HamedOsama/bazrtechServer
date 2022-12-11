@@ -56,7 +56,7 @@ const calculateShipping = async (req, res, next) => {
       if (weight >= 3 && weight < 4)
         total = price + shippingData.foodSupplements.four
       if (weight >= 4)
-        total = price + shippingData.foodSupplements.five
+        total = price + (weight * shippingData.foodSupplements.five)
     }
     if (category === 'iron') {
       if (weight > 0 && weight < 1)

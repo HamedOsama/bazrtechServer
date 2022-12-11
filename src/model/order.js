@@ -2,42 +2,50 @@ const mongoose = require('mongoose')
 const timestamps = require('mongoose-timestamp')
 const validator = require('validator')
 const { User } = require('./user')
-const Product = require('./product')
-const Admin = require('./admin')
 const orderSchema = mongoose.Schema({
-    sellerId: {
-        type: mongoose.Types.ObjectId,
-        ref: User,
-        required: true
-    },
     buyerId: {
         type: mongoose.Types.ObjectId,
         ref: User,
         required: true
     },
-    adminId: {
-        type: mongoose.Types.ObjectId,
-        ref: Admin,
-    },
-    sellPrice: {
-        type: Number,
-        required: true
-    },
-    newPrice: {
-        type: Number,
-        required: true
-    },
-    productId: {
-        type: mongoose.Types.ObjectId,
-        ref: Product,
+    buyerPhone: {
+        type: String,
         required: true
     },
     orderItems: [
         {
-            propertyId: {
-                type: mongoose.Types.ObjectId,
-                ref: Product,
+            price: {
+                type: Number,
                 required: true
+            },
+            link: {
+                type: String,
+                required: true,
+                trim : true
+            },
+            category: {
+                type: String,
+                required: true,
+                trim : true
+            },
+            subCategory: {
+                type: String,
+                required: true,
+                trim : true
+            },
+            color: {
+                type: String,
+                required: true,
+                trim : true
+            },
+            weight: {
+                type: Number,
+                required: true,
+            },
+            size: {
+                type: String,
+                required: true,
+                trim : true
             },
             quantity: {
                 type: Number,
@@ -46,55 +54,32 @@ const orderSchema = mongoose.Schema({
         }
     ]
     ,
-    name: {
+    country: {
         type: String,
         trim: true,
         required: true
-    },
-    phone: {
-        type: String,
-        trim: true,
-        required: true,
-        validate(value) {
-            if (!validator.isMobilePhone(value, ['ar-EG'])) {
-                throw new Error('Phone number is invalid')
-            }
-        }
-    },
-    subPhone: {
-        type: String,
-        trim: true,
-        validate(value) {
-            if (!validator.isMobilePhone(value, ['ar-EG'])) {
-                throw new Error('Phone number is invalid')
-            }
-        }
     },
     city: {
         type: String,
         trim: true,
         required: true
     },
-    area: {
+    state: {
         type: String,
         trim: true,
         required: true
     },
-    address: {
+    street: {
         type: String,
         trim: true,
         required: true
     },
-    subAddress: {
+    buildingNumber: {
         type: String,
         trim: true,
-        default: ''
-    },
-    shippingPrice: {
-        type: Number,
         required: true
     },
-    storeName: {
+    apartmentNumber: {
         type: String,
         trim: true,
         required: true
@@ -104,27 +89,23 @@ const orderSchema = mongoose.Schema({
         trim: true,
         default: ''
     },
+    productsPrice: {
+        type: Number,
+        required: true
+    },
+    shippingPrice: {
+        type: Number,
+        required: true
+    },
     totalPrice: {
         type: Number,
         default: 0,
         required: true
     },
-    websiteTax: {
-        type: Number,
-        default: 0
-    }
-    ,
-    buyerCommission: {
-        type: Number,
-        default: 0
-    },
     orderState: {
         type: Number,
         default: 0
     },
-    deliveredAt: {
-        type: Date
-    }
 })
 orderSchema.plugin(timestamps)
 const Order = mongoose.model('orders', orderSchema)

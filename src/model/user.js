@@ -28,11 +28,11 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        validate(value) {
-            if (!validator.isMobilePhone(value, ['ar-EG'])) {
-                throw new Error('Phone number is invalid')
-            }
-        }
+        // validate(value) {
+        //     if (!validator.isMobilePhone(value, ['ar-EG'])) {
+        //         throw new Error('Phone number is invalid')
+        //     }
+        // }
     },
     password: {
         type: String,

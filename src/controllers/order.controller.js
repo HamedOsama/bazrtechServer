@@ -1,73 +1,166 @@
 const Order = require('../model/order')
 const { User } = require('../model/user')
-const Product = require('../model/product')
 const ServerError = require('../interface/Error')
 const ApiFeatures = require('../utils/ApiFeatures');
+const Shipping = require('../model/shipping');
 
 const createOrder = async (req, res, next) => {
   try {
-    if (req.user.role !== 'buyer' && req.user.status !== 'active') {
-      return next(ServerError.badRequest(403, 'not authorized'))
-    }
-    if (req.body.newPrice <= req.body.sellPrice) {
-      return next(ServerError.badRequest(400, 'new price must be greater than sell price'))
-    }
-    const productId = req.body.productId
-    const product = await Product.findById({ _id: productId })
-    if (!product)
-      return next(ServerError.badRequest(400, 'invalid product id'))
-    if (product.status !== 1)
-      return next(ServerError.badRequest(400, 'can not buy this product because it is not active'))
-    if (!product.sellPrice)
-      return next(ServerError.badRequest(400, 'can not buy this product because it is not active and do not have sell price yet'))
-    if (req.body.sellPrice !== product.sellPrice)
-      return next(ServerError.badRequest(400, 'sellPrice is wrong'))
-    //check if product seller is active or no
-    const seller = await User.findById({ _id: product.seller });
-    if (seller.status !== 'active')
-      return next(ServerError.badRequest(400, 'can not buy this product because its seller is blocked'))
-    // const ordersProperties = product.properties.filter(el => el._id.toString() === req.body.orderItems[0].propertyId)
     const validateQuantity = req?.body?.orderItems?.every(el => el.quantity > 0)
     if (!validateQuantity)
       return next(ServerError.badRequest(400, 'quantity must be positive number'))
-
-    let checkForProperties = 0;
-    let checkForStock = 0;
-    req?.body?.orderItems?.forEach(orderItem => {
-      console.log(orderItem.propertyId)
-      const checker = product.properties.find(el => el?._id?.toString() === orderItem?.propertyId)
-      const stockChecker = product.properties.find(el => el?._id?.toString() === orderItem?.propertyId && el.amount >= orderItem.quantity)
-      // console.log
-      if (checker)
-        checkForProperties++;
-      if (stockChecker)
-        checkForStock++;
+    const shippingData = await Shipping.findOne({ country : req.user.country });
+    if (!shippingData)
+      return next(ServerError.badRequest(400, 'غير متوفر شحن لهذه المنطقة'));
+    const accessories = [];
+    const shoes = [];
+    const bags = [];
+    const electronics = [];
+    const homeApplicants = [];
+    const furniture = [];
+    const clothes = [];
+    const makeUp = [];
+    const foodSupplements = [];
+    const iron = [];
+    const other = [];
+    let productsPrice = 0;
+    let shippingPrice = 0;
+    req?.body?.orderItems?.forEach(el => {
+      productsPrice += (el.price * el.quantity)
+      if (el.category === 'accessories')
+        accessories.push(el)
+      if (el.category === 'shoes')
+        shoes.push(el)
+      if (el.category === 'bags')
+        bags.push(el)
+      if (el.category === 'electronics')
+        electronics.push(el)
+      if (el.category === 'homeApplicants')
+        homeApplicants.push(el)
+      if (el.category === 'furniture')
+        furniture.push(el)
+      if (el.category === 'clothes')
+        clothes.push(el)
+      if (el.category === 'makeUp')
+        makeUp.push(el)
+      if (el.category === 'foodSupplements')
+        foodSupplements.push(el)
+      if (el.category === 'iron')
+        iron.push(el)
+      if (el.category === 'other')
+        other.push(el)
     })
-    console.log(checkForProperties)
-    if (checkForProperties !== req.body.orderItems.length)
-      return next(ServerError.badRequest(400, 'invalid property id'))
-    if (checkForStock !== req.body.orderItems.length)
-      return next(ServerError.badRequest(400, 'stock is low'))
+    accessories.forEach(el => {
+      shippingPrice += el.quantity * shippingData.accessories
+    })
+    shoes.forEach(el => {
+      shippingPrice += el.quantity * shippingData.shoes
+    })
+    bags.forEach(el => {
+      shippingPrice += el.quantity * shippingData.bags
+    })
+    electronics.forEach(el => {
+      shippingPrice += el.quantity * shippingData.electronics
+    })
+    homeApplicants.forEach(el => {
+      shippingPrice += el.quantity * shippingData.homeApplicants
+    })
+    furniture.forEach(el => {
+      shippingPrice += el.quantity * shippingData.furniture
+    })
+    const totalClothes = clothes.reduce((acc, el) => (el.weight * el.quantity) + acc, 0)
+    const totalMakeUp = makeUp.reduce((acc, el) => (el.weight * el.quantity) + acc, 0)
+    const totalFoodSupplements = foodSupplements.reduce((acc, el) => (el.weight * el.quantity) + acc, 0)
+    const totalIron = iron.reduce((acc, el) => (el.weight * el.quantity) + acc, 0)
+    const totalOther = other.reduce((acc, el) => (el.weight * el.quantity) + acc, 0)
 
-    const orderQuantity = req.body.orderItems.reduce((acc, cur) => cur.quantity + acc, 0)
-    console.log(orderQuantity)
-    const shippingPrice = product.shipping_price[req.body.city]
-    const totalPrice = (req.body.newPrice * orderQuantity) + shippingPrice;
-    console.log(totalPrice)
-    // console.log(totalPrice);
-    // console.log(req.body.totalPrice);
-    if (req.body.shippingPrice !== shippingPrice)
-      return next(ServerError.badRequest(400, 'invalid shipping price'))
-    if (req.body.totalPrice !== totalPrice)
-      return next(ServerError.badRequest(400, 'invalid total price'))
+    if (totalClothes > 0 && totalClothes < 1)
+      shippingPrice += shippingData.clothes.one
+    if (totalClothes >= 1 && totalClothes < 2)
+      shippingPrice += shippingData.clothes.two
+    if (totalClothes >= 2 && totalClothes < 3)
+      shippingPrice += shippingData.clothes.three
+    if (totalClothes >= 3 && totalClothes < 4)
+      shippingPrice += shippingData.clothes.four
+    if (totalClothes >= 4 && totalClothes < 10)
+      shippingPrice += (totalClothes * shippingData.clothes.five)
+    if (totalClothes >= 10)
+      shippingPrice += (totalClothes * shippingData.clothes.six)
+
+    if (totalMakeUp > 0 && totalMakeUp < 0.5)
+      shippingPrice += shippingData.makeUp.half
+    if (totalMakeUp >= 0.5 && totalMakeUp < 1)
+      shippingPrice += shippingData.makeUp.one
+    if (totalMakeUp >= 1 && totalMakeUp < 2)
+      shippingPrice += shippingData.makeUp.two
+    if (totalMakeUp >= 2 && totalMakeUp < 3)
+      shippingPrice += shippingData.makeUp.three
+    if (totalMakeUp >= 3 && totalMakeUp < 4)
+      shippingPrice += shippingData.makeUp.four
+    if (totalMakeUp >= 4 && totalMakeUp < 5)
+      shippingPrice += shippingData.makeUp.five
+    if (totalMakeUp >= 10)
+      shippingPrice += (totalMakeUp * shippingData.makeUp.six)
+
+
+    if (totalFoodSupplements > 0 && totalFoodSupplements < 0.5)
+      shippingPrice += shippingData.foodSupplements.half
+    if (totalFoodSupplements >= 0.5 && totalFoodSupplements < 1)
+      shippingPrice += shippingData.foodSupplements.one
+    if (totalFoodSupplements >= 1 && totalFoodSupplements < 2)
+      shippingPrice += shippingData.foodSupplements.two
+    if (totalFoodSupplements >= 2 && totalFoodSupplements < 3)
+      shippingPrice += shippingData.foodSupplements.three
+    if (totalFoodSupplements >= 3 && totalFoodSupplements < 4)
+      shippingPrice += shippingData.foodSupplements.four
+    if (totalFoodSupplements >= 4)
+      shippingPrice += (totalFoodSupplements * shippingData.foodSupplements.five)
+
+    if (totalIron > 0 && totalIron < 1)
+      shippingPrice += shippingData.iron.one
+    if (totalIron >= 1 && totalIron < 2)
+      shippingPrice += shippingData.iron.two
+    if (totalIron >= 2 && totalIron < 3)
+      shippingPrice += shippingData.iron.three
+    if (totalIron >= 3 && totalIron < 5)
+      shippingPrice += (totalIron * shippingData.iron.four)
+    if (totalIron >= 5 && totalIron < 10)
+      shippingPrice += (totalIron * shippingData.iron.five)
+    if (totalIron >= 10)
+      shippingPrice += (totalIron * shippingData.iron.six)
+
+    if (totalOther > 0 && totalOther < 1)
+      shippingPrice += shippingData.other.one
+    if (totalOther >= 1 && totalOther < 2)
+      shippingPrice += shippingData.other.two
+    if (totalOther >= 2 && totalOther < 3)
+      shippingPrice += shippingData.other.three
+    if (totalOther >= 3 && totalOther < 5)
+      shippingPrice += shippingData.other.four
+    if (totalOther >= 5 && totalOther < 10)
+      shippingPrice += (totalOther * shippingData.other.five)
+    if (totalOther >= 10)
+      shippingPrice += (totalOther * shippingData.other.six)
+    const totalPrice = shippingPrice + productsPrice
+    console.log(clothes)
+    console.log(   
+      productsPrice,
+      totalPrice,
+      shippingPrice,)
+    const user = req.user;
     const order = new Order({
       ...req.body,
-      sellerId: product.seller,
-      buyerId: req.user._id,
-      shippingPrice,
+      productsPrice,
       totalPrice,
-      websiteTax: (product.sellPrice - product.originalPrice) * orderQuantity,
-      buyerCommission: (req.body.newPrice - product.sellPrice) * orderQuantity,
+      shippingPrice,
+      buyerId : user._id,
+      buyerPhone: user.phone,
+      country : user.country,
+      city : user.city,
+      state : user.state,
+      street : user.street,
+      buildingNumber : user.buildingNumber,
+      apartmentNumber : user.apartmentNumber,
     })
     await order.save()
     res.status(201).json({
@@ -81,40 +174,6 @@ const createOrder = async (req, res, next) => {
   }
 }
 
-// Todo calc totalPrice quantity * price
-const confirmOder = async (order, req, res, next) => {
-  try {
-    order.orderState = 1;
-    const product = await Product.findById({ _id: order.productId })
-    let checkStockError = false
-    order.orderItems.forEach(async item => {
-      // get property
-      const elIndex = product.properties.findIndex(el => el._id.toString() === item.propertyId.toString());
-      //check for Stock First
-      if (product.properties[elIndex].amount < item.quantity)
-        checkStockError = true
-      // decrease stock
-      product.properties[elIndex].amount -= item.quantity;
-    })
-    if (checkStockError)
-      return next(ServerError.badRequest(400, 'stock is low cancel the or try again later'))
-    console.log(product)
-    const sum = product.properties.reduce((acc, el) => {
-      return acc + el.amount
-    }, 0)
-    product.total_amount = sum;
-    await product.save();
-    await order.save();
-    res.status(200).json({
-      ok: true,
-      code: 200,
-      message: 'succeeded',
-      order
-    })
-  } catch (e) {
-    next(e);
-  }
-}
 const cancelOrder = async (order, req, res, next) => {
   try {
     const product = await Product.findById({ _id: order.productId })
@@ -140,72 +199,16 @@ const cancelOrder = async (order, req, res, next) => {
     next(e);
   }
 }
-const updateOrder = async (req, res, next) => {
-  try {
-    if (req.user.status !== 'active') {
-      return next(ServerError.badRequest(403, 'not authorized'));
-    }
-    const orderId = req.params.id;
-    if (!orderId || orderId.length < 24)
-      return next(ServerError.badRequest(400, 'order id not valid'));
-    const order = await Order.findById({ _id: orderId });
-    if (!order)
-      return next(ServerError.badRequest(400, 'order id not valid'));
-    if (order.orderState === 4) {
-      return next(ServerError.badRequest(400, 'order can not modified after it is finished'));
-    }
-    const orderState = req.body.orderState;
-    if (order.orderState === 0 && orderState > 1) {
-      return next(ServerError.badRequest(400, 'order must be confirmed first'));
-    }
-    if (!orderState)
-      return next(ServerError.badRequest(400, 'please put orderState in body'));
-    if (![-4, -3, -2, 2, 3].includes(orderState))
-      return next(ServerError.badRequest(400, 'orderState is not in valid range'));
-    if (orderState === -3) {
-      if (req.user.role !== 'buyer') {
-        return next(ServerError.badRequest(403, 'not authorized'));
-      }
-      if (order.orderState !== 0) {
-        return next(ServerError.badRequest(403, 'you can not cancel the order after it is confirmed'));
-      }
-    } // ask for it
-    if ([-4, -2, 2, 3].includes(orderState))
-      if (req.user.role !== 'seller') {
-        return next(ServerError.badRequest(403, 'not authorized'));
-      }
-    if ([-5, -1, 1, 0, 4].includes(orderState))
-      return next(ServerError.badRequest(403, 'not authorized'));
 
-    if (order.orderState >= orderState && orderState >= 0)
-      return next(ServerError.badRequest(400, 'you cannot downgrade orderState step except you canceling it '));
-    if (order.orderState < 0)
-      return next(ServerError.badRequest(400, 'order is already canceled you cannot change anything in it'));
-    if (orderState === 1)
-      return await confirmOder(order, req, res, next);
-    if (orderState === 2) {
-      order.orderState = orderState;
-      await order.save();
-    }
-    if (orderState === 3) {
-      order.orderState = orderState;
-      await order.save();
-    }
-    if ([-4, -3, -2].includes(orderState)) {
-      if (order.orderState === 0) {
-        order.orderState = orderState;
-        order.save();
-      } else {
-        order.orderState = orderState;
-        return await cancelOrder(order, req, res, next);
-      }
-      // order.save();
-    }
+const getUserOrders = async( req,res,next)=>{
+  try {
+    const orders = await ApiFeatures.pagination(Order.find({buyerId : req.user.id}) , req.query);
+    const totalLength = await Order.countDocuments({buyerId : req.user.id});
     res.status(200).json({
-      ok: true,
-      code: 200,
-      message: 'succeeded',
-      order
+      ok : true,
+      status : 200,
+      data : orders,
+      totalLength
     })
   } catch (e) {
     next(e);
@@ -216,30 +219,19 @@ const updateOrder = async (req, res, next) => {
 const getOrder = async (req, res, next) => {
   try {
     const orderId = req.params.id;
-    if (!orderId || orderId.length < 24)
+    if (!orderId)
       return next(ServerError.badRequest(400, 'order id not valid'));
     const order = await Order.findById({ _id: orderId });
     if (!order)
       return next(ServerError.badRequest(400, 'order id not valid'));
-    const product = await Product.findById({ _id: order.productId })
-    console.log(product)
-    // if (req.user.role === 'seller') {
-    //   console.log(req.user._id)
-    //   console.log(order.seller)
-    //   if (req.user._id.toString() !== order.sellerId.toString())
-    //     return next(ServerError.badRequest(403, 'not authorized'));
-    // }
-    if (req.user.role === 'buyer') {
-      if (req.user._id.toString() !== order.buyerId.toString())
-        return next(ServerError.badRequest(403, 'not authorized'));
-    }
-    const newOrderForm = { _id, buyerId } = order;
     res.status(200).json({
-      data: newOrderForm
+      ok : true,
+      status : 200,
+      data: order
     })
   } catch (e) {
     next(e);
   }
 }
 
-module.exports = { createOrder, updateOrder, getOrder }
+module.exports = { createOrder, getUserOrders ,cancelOrder}

@@ -1074,28 +1074,41 @@ const addMoreDataToOrder = async (orders) => {
 const getAllOrders = async (req, res, next) => {
   try {
     const orders = await ApiFeatures.pagination(Order.find({}), req.query);
-    // const newOrders = [];
-    // await orders.map(async el => {
-    //   const product = await Product.findById({ _id: el.productId });
-    //   el.product = product;
-    //   console.log(1)
-    //   newOrders.push(135)
-    // })
-    // console.log(newOrders)
-    const newOrders = await addMoreDataToOrder(orders);
     const totalLength = await Order.countDocuments();
-    // console.log(newOrders)
     res.status(200).json({
       ok: true,
       code: 200,
       message: 'succeeded',
-      data: newOrders,
+      data: orders,
       totalLength,
     });
   } catch (e) {
     next(e);
   }
 };
+
+const updateOrder = async (req, res, next) => {
+  try {
+    const orderId = req.params.id;
+    if (!orderId || orderId.length < 24)
+      return next(ServerError.badRequest(400, 'order id not valid'));
+    const order = await Order.findById({ _id: orderId });
+    if (!order) return next(ServerError.badRequest(400, 'order id not valid'));
+
+    const orderState = req.body.orderState;
+    order.orderState = orderState;
+    await order.save()
+    res.status(200).json({
+      ok: true,
+      code: 200,
+      message: 'succeeded',
+      data : order
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 const getOrder = async (req, res, next) => {
   try {
     const orderId = req.params.id;
@@ -1254,81 +1267,83 @@ const finishOrder = async (order, req, res, next) => {
     next(e);
   }
 };
-const updateOrder = async (req, res, next) => {
-  try {
-    const orderId = req.params.id;
-    if (!orderId || orderId.length < 24)
-      return next(ServerError.badRequest(400, 'order id not valid'));
-    const order = await Order.findById({ _id: orderId });
-    if (!order) return next(ServerError.badRequest(400, 'order id not valid'));
+// const updateOrder = async (req, res, next) => {
+//   try {
+//     const orderId = req.params.id;
+//     if (!orderId || orderId.length < 24)
+//       return next(ServerError.badRequest(400, 'order id not valid'));
+//     const order = await Order.findById({ _id: orderId });
+//     if (!order) return next(ServerError.badRequest(400, 'order id not valid'));
 
-    const orderState = req.body.orderState;
-    if (!orderState)
-      return next(ServerError.badRequest(400, 'please put orderState in body'));
-    if (![-5, -4, -3, -2, -1, 0, 1, 2, 3, 4].includes(orderState))
-      return next(
-        ServerError.badRequest(400, 'orderState is not in valid range')
-      );
-    // if (order.orderState === 4 && orderState !== -5) { // return item
-    //   return next(ServerError.badRequest(400, 'order is done you can only return it'));
-    // }
-    if (order.orderState === 4) {
-      return next(
-        ServerError.badRequest(
-          400,
-          'order can not modified after it is finished'
-        )
-      );
-    }
-    if (order.orderState === 0 && orderState > 1) {
-      return next(ServerError.badRequest(400, 'order must be confirmed first'));
-    }
-    if (order.orderState >= orderState && orderState >= 0)
-      return next(
-        ServerError.badRequest(
-          400,
-          'you cannot downgrade orderState step except you canceling it '
-        )
-      );
-    if (order.orderState < 0)
-      return next(
-        ServerError.badRequest(
-          400,
-          'order is already canceled you cannot change anything in it'
-        )
-      );
-    if (orderState === 1) return await confirmOder(order, req, res, next);
-    if (orderState === 2) {
-      order.orderState = orderState;
-      await order.save();
-    }
-    if (orderState === 3) {
-      order.orderState = orderState;
-      await order.save();
-    }
-    if (orderState === 4) {
-      order.orderState = orderState;
-      return await finishOrder(order, req, res, next);
-    }
-    if ([-5, -4, -3, -2, -1].includes(orderState)) {
-      if (order.orderState === 0) {
-        order.orderState = orderState;
-        order.save();
-      } else {
-        order.orderState = orderState;
-        return await cancelOrder(order, req, res, next);
-      }
-      // order.save();
-    }
-    res.status(200).json({
-      ok: true,
-      code: 200,
-      message: 'succeeded',
-    });
-  } catch (e) {
-    next(e);
-  }
-};
+//     const orderState = req.body.orderState;
+//     if (!orderState)
+//       return next(ServerError.badRequest(400, 'please put orderState in body'));
+//     if (![-5, -4, -3, -2, -1, 0, 1, 2, 3, 4].includes(orderState))
+//       return next(
+//         ServerError.badRequest(400, 'orderState is not in valid range')
+//       );
+//     // if (order.orderState === 4 && orderState !== -5) { // return item
+//     //   return next(ServerError.badRequest(400, 'order is done you can only return it'));
+//     // }
+//     if (order.orderState === 4) {
+//       return next(
+//         ServerError.badRequest(
+//           400,
+//           'order can not modified after it is finished'
+//         )
+//       );
+//     }
+//     if (order.orderState === 0 && orderState > 1) {
+//       return next(ServerError.badRequest(400, 'order must be confirmed first'));
+//     }
+//     if (order.orderState >= orderState && orderState >= 0)
+//       return next(
+//         ServerError.badRequest(
+//           400,
+//           'you cannot downgrade orderState step except you canceling it '
+//         )
+//       );
+//     if (order.orderState < 0)
+//       return next(
+//         ServerError.badRequest(
+//           400,
+//           'order is already canceled you cannot change anything in it'
+//         )
+//       );
+//     if (orderState === 1) return await confirmOder(order, req, res, next);
+//     if (orderState === 2) {
+//       order.orderState = orderState;
+//       await order.save();
+//     }
+//     if (orderState === 3) {
+//       order.orderState = orderState;
+//       await order.save();
+//     }
+//     if (orderState === 4) {
+//       order.orderState = orderState;
+//       return await finishOrder(order, req, res, next);
+//     }
+//     if ([-5, -4, -3, -2, -1].includes(orderState)) {
+//       if (order.orderState === 0) {
+//         order.orderState = orderState;
+//         order.save();
+//       } else {
+//         order.orderState = orderState;
+//         return await cancelOrder(order, req, res, next);
+//       }
+//       // order.save();
+//     }
+//     res.status(200).json({
+//       ok: true,
+//       code: 200,
+//       message: 'succeeded',
+//     });
+//   } catch (e) {
+//     next(e);
+//   }
+// };
+
+
 
 const updateWithdrawal = async (req, res, next) => {
   try {
