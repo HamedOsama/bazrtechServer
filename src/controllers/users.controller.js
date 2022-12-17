@@ -50,7 +50,7 @@ const login = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
   try {
     const updates = Object.keys(req.body);
-    const notAllowedUpdates = ['status', 'tokens', 'balance', 'password', 'updatedAt', '_id', 'createdAt', 'resetLink',];
+    const notAllowedUpdates = ['status', 'tokens', 'code', 'balance', 'password', 'updatedAt', '_id', 'createdAt', 'resetLink',];
     const inValidUpdates = updates.filter(el => notAllowedUpdates.includes(el))
     if (inValidUpdates.length > 0) {
       return next(ServerError.badRequest(401, `not allowed to update (${inValidUpdates.join(', ')})`))

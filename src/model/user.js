@@ -3,11 +3,21 @@ const timestamps = require('mongoose-timestamp')
 const bcryptjs = require('bcryptjs')
 const validator = require('validator')
 const jwt = require('jsonwebtoken')
+import { customAlphabet } from "nanoid";
+
+// generate random key
+const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0987654321", 6);
 const userSchema = mongoose.Schema({
     name: {
         type: String,
         required: true,
         trim: true
+    },
+    code: {
+        type: String,
+        unique: true,
+        required: true,
+        default: () => nanoid()
     },
     email: {
         type: String,
@@ -20,9 +30,9 @@ const userSchema = mongoose.Schema({
             }
         }
     },
-    balance : {
-        type : Number,
-        default : 0
+    balance: {
+        type: Number,
+        default: 0
     },
     phone: {
         type: String,
@@ -43,38 +53,38 @@ const userSchema = mongoose.Schema({
             if (value.length < 8)
                 throw new Error("password length must be at least 8")
             // if (!strongPass.test(value))
-                // throw new Error("password must contain at least one capital/small letter & special characters and number")
+            // throw new Error("password must contain at least one capital/small letter & special characters and number")
         }
     },
-    country:{
-        type : String,
-        required : true,
-        trim : true ,
+    country: {
+        type: String,
+        required: true,
+        trim: true,
     },
-    city:{
-        type : String,
-        default : '',
-        trim : true ,
+    city: {
+        type: String,
+        default: '',
+        trim: true,
     },
-    state:{
-        type : String,
-        default : '',
-        trim : true ,
+    state: {
+        type: String,
+        default: '',
+        trim: true,
     },
-    street:{
-        type : String,
-        default : '',
-        trim : true ,
+    street: {
+        type: String,
+        default: '',
+        trim: true,
     },
-    buildingNumber : {
-        type : String,
-        default : '',
-        trim : true ,
+    buildingNumber: {
+        type: String,
+        default: '',
+        trim: true,
     },
-    apartmentNumber:{
-        type : String,
-        default : '',
-        trim : true ,
+    apartmentNumber: {
+        type: String,
+        default: '',
+        trim: true,
     },
     status: {
         type: String,
