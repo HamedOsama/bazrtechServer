@@ -41,10 +41,12 @@ routes.route('/users/logout/:id').delete(auth, adminController.logoutUserFromAll
 // order routes
 // routes.route('/order/add').post(auth, adminController.createOrder);
 routes.route('/orders').get(auth, adminController.getAllOrders);
-routes.route('/orders/:id').patch(auth, adminController.updateOrder);
+routes.route('/orders/:id').
+get(auth,adminController.getOrder)
+.patch(auth, adminController.updateOrder);
+routes.route('/order/buyer/:id').get(auth, adminController.getOrdersByBuyerId);
 // routes.route('/order/id/:id').get(auth, adminController.getOrder);
 // routes.route('/order/seller/:id').get(auth, adminController.getOrdersBySellerId);
-// routes.route('/order/buyer/:id').get(auth, adminController.getOrdersByBuyerId);
 
 
 //api/v1/admin/orders (get) get all orders

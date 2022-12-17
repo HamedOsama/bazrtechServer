@@ -5,7 +5,7 @@ const validator = require('validator')
 const jwt = require('jsonwebtoken');
 const { customAlphabet } = require('nanoid');
 // generate random key
-const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0987654321", 6);
+const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0987654321", 6);
 const userSchema = mongoose.Schema({
     name: {
         type: String,

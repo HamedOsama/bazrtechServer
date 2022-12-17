@@ -1112,9 +1112,9 @@ const updateOrder = async (req, res, next) => {
 const getOrder = async (req, res, next) => {
   try {
     const orderId = req.params.id;
-    if (!orderId || orderId.length < 24)
+    if (!orderId)
       return next(ServerError.badRequest(400, 'order id not valid'));
-    const order = await Order.findById({ _id: orderId });
+    const order = await Order.findById({ _id: {$regex: new RegExp(orderId, 'i')} });
     if (!order) return next(ServerError.badRequest(400, 'order id not valid'));
 
     const newOrderForm = await addMoreDataToOrder(order);
@@ -1128,39 +1128,17 @@ const getOrder = async (req, res, next) => {
     next(e);
   }
 };
-const getOrdersBySellerId = async (req, res, next) => {
-  try {
-    const id = req.params.id;
-    if (!id || id.length < 24)
-      return next(ServerError.badRequest(400, 'order id not valid'));
-    const orders = await ApiFeatures.pagination(
-      Order.find({ sellerId: id }),
-      req.query
-    );
-    const newOrdersForm = await addMoreDataToOrder(orders);
-    const totalLength = await Order.countDocuments({ sellerId: id });
-    res.status(200).json({
-      ok: true,
-      code: 200,
-      message: 'succeeded',
-      data: newOrdersForm,
-      totalLength,
-    });
-  } catch (e) {
-    next(e);
-  }
-};
 const getOrdersByBuyerId = async (req, res, next) => {
   try {
     const id = req.params.id;
-    if (!id || id.length < 24)
+    if (!id)
       return next(ServerError.badRequest(400, 'order id not valid'));
     const orders = await ApiFeatures.pagination(
-      Order.find({ buyerId: id }),
+      Order.find({ buyerId:  {$regex: new RegExp(id, 'i')}}),
       req.query
     );
     const newOrdersForm = await addMoreDataToOrder(orders);
-    const totalLength = await Order.countDocuments({ buyerId: id });
+    const totalLength = await Order.countDocuments({ buyerId:  {$regex: new RegExp(id, 'i')} });
     res.status(200).json({
       ok: true,
       code: 200,
@@ -1172,6 +1150,28 @@ const getOrdersByBuyerId = async (req, res, next) => {
     next(e);
   }
 };
+// const getOrdersByBuyerId = async (req, res, next) => {
+//   try {
+//     const id = req.params.id;
+//     if (!id || id.length < 24)
+//       return next(ServerError.badRequest(400, 'order id not valid'));
+//     const orders = await ApiFeatures.pagination(
+//       Order.find({ buyerId: id }),
+//       req.query
+//     );
+//     const newOrdersForm = await addMoreDataToOrder(orders);
+//     const totalLength = await Order.countDocuments({ buyerId: id });
+//     res.status(200).json({
+//       ok: true,
+//       code: 200,
+//       message: 'succeeded',
+//       data: newOrdersForm,
+//       totalLength,
+//     });
+//   } catch (e) {
+//     next(e);
+//   }
+// };
 const confirmOder = async (order, req, res, next) => {
   try {
     order.orderState = 1;
@@ -1689,7 +1689,6 @@ module.exports = {
   createOrder,
   getOrder,
   getAllOrders,
-  getOrdersBySellerId,
   getOrdersByBuyerId,
   updateOrder,
   updateWithdrawal,

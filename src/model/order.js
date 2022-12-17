@@ -1,12 +1,12 @@
 const mongoose = require('mongoose')
 const timestamps = require('mongoose-timestamp')
 const validator = require('validator')
-const { User } = require('./user')
+
 const orderSchema = mongoose.Schema({
     buyerId: {
-        type: mongoose.Types.ObjectId,
-        ref: User,
-        required: true
+        type: 'string',
+        required: true,
+        trim :true
     },
     buyerPhone: {
         type: String,
