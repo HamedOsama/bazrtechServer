@@ -25,6 +25,11 @@ const OfferModel = mongoose.Schema({
   discountAmount : {
     type : Number,
     required : true,
+  },
+  link:{
+    type: String,
+    required: true,
+    trim: true,
   }
 })
 OfferModel.plugin(timestamps)
