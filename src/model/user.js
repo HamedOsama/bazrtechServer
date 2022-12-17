@@ -2,9 +2,8 @@ const mongoose = require('mongoose')
 const timestamps = require('mongoose-timestamp')
 const bcryptjs = require('bcryptjs')
 const validator = require('validator')
-const jwt = require('jsonwebtoken')
-import { customAlphabet } from "nanoid";
-
+const jwt = require('jsonwebtoken');
+const { customAlphabet } = require('nanoid');
 // generate random key
 const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0987654321", 6);
 const userSchema = mongoose.Schema({
