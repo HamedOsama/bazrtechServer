@@ -202,8 +202,8 @@ const cancelOrder = async (order, req, res, next) => {
 
 const getUserOrders = async( req,res,next)=>{
   try {
-    const orders = await ApiFeatures.pagination(Order.find({buyerId : req.user.id}) , req.query);
-    const totalLength = await Order.countDocuments({buyerId : req.user.id});
+    const orders = await ApiFeatures.pagination(Order.find({buyerId : req.user.code}) , req.query);
+    const totalLength = await Order.countDocuments({buyerId : req.user.code});
     res.status(200).json({
       ok : true,
       status : 200,
@@ -216,12 +216,13 @@ const getUserOrders = async( req,res,next)=>{
 }
 
 
-const getOrder = async (req, res, next) => {
+const orderSearch = async (req, res, next) => {
   try {
+    const user = req.user;
     const orderId = req.params.id;
     if (!orderId)
       return next(ServerError.badRequest(400, 'order id not valid'));
-    const order = await Order.findById({ _id: orderId });
+    const order = await Order.find({ _id:{$regex: new RegExp(orderId, 'i')}, buyerId : user.code});
     if (!order)
       return next(ServerError.badRequest(400, 'order id not valid'));
     res.status(200).json({
@@ -234,4 +235,4 @@ const getOrder = async (req, res, next) => {
   }
 }
 
-module.exports = { createOrder, getUserOrders ,cancelOrder}
+module.exports = { createOrder, getUserOrders ,cancelOrder,orderSearch}
