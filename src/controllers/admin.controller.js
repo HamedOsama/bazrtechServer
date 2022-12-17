@@ -458,9 +458,9 @@ const logoutUserFromAllDevices = async (req, res, next) => {
 
 const getUserById = async (req, res, next) => {
   try {
-    const userId = req.params.id;
+    const userId = req.params.code;
     if (!userId) return next(ServerError.badRequest(400, 'please send id'));
-    const user = await User.findById({ _id: userId });
+    const user = await User.findOne({ code: userId });
     if (!user) {
       return next(
         ServerError.badRequest(400, 'unable to find any user match this ID')
