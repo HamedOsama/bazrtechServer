@@ -153,7 +153,7 @@ const createOrder = async (req, res, next) => {
       productsPrice,
       totalPrice,
       shippingPrice,
-      buyerId : user._id,
+      buyerId : user.code,
       buyerPhone: user.phone,
       country : user.country,
       city : user.city,
