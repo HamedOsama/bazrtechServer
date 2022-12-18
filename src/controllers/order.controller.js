@@ -142,11 +142,11 @@ const createOrder = async (req, res, next) => {
     if (totalOther >= 10)
       shippingPrice += (totalOther * shippingData.other.six)
     const totalPrice = shippingPrice + productsPrice
-    console.log(clothes)
-    console.log(   
-      productsPrice,
-      totalPrice,
-      shippingPrice,)
+    // console.log(clothes)
+    // console.log(   
+    //   productsPrice,
+    //   totalPrice,
+    //   shippingPrice,)
     const user = req.user;
     const order = new Order({
       ...req.body,
@@ -220,9 +220,9 @@ const orderSearch = async (req, res, next) => {
   try {
     const user = req.user;
     const orderId = req.params.id;
-    if (!orderId)
+    if (!orderId || orderId.length !== 24)
       return next(ServerError.badRequest(400, 'order id not valid'));
-    const order = await Order.find({ _id:{$regex: new RegExp(orderId, 'i')}, buyerId : user.code});
+    const order = await Order.find({ _id:orderId, buyerId : user.code});
     if (!order)
       return next(ServerError.badRequest(400, 'order id not valid'));
     res.status(200).json({

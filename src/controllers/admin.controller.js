@@ -1113,9 +1113,9 @@ const updateOrder = async (req, res, next) => {
 const getOrder = async (req, res, next) => {
   try {
     const orderId = req.params.id;
-    if (!orderId)
+    if (!orderId || orderId.length !== 24)
       return next(ServerError.badRequest(400, 'order id not valid'));
-    const order = await Order.find({ _id: { $regex: new RegExp(orderId, 'i') } });
+    const order = await Order.findById({ _id: orderId } );
     if (!order) return next(ServerError.badRequest(400, 'order id not valid'));
     res.status(200).json({
       ok: true,
