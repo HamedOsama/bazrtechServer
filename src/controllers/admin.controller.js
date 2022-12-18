@@ -459,13 +459,14 @@ const logoutUserFromAllDevices = async (req, res, next) => {
 const getUserById = async (req, res, next) => {
   try {
     const userId = req.params.code;
+    console.log(userId)
     if (!userId) return next(ServerError.badRequest(400, 'please send id'));
-    const user = await User.findOne({ code: userId });
-    if (!user) {
-      return next(
-        ServerError.badRequest(400, 'unable to find any user match this ID')
-      );
-    }
+    const user = await User.find({ code: new RegExp(userId, 'i') });
+    // if (!user) {
+    //   return next(
+    //     ServerError.badRequest(400, 'unable to find any user match this ID')
+    //   );
+    // }
 
     res.status(200).json({
       ok: true,
@@ -1102,7 +1103,7 @@ const updateOrder = async (req, res, next) => {
       ok: true,
       code: 200,
       message: 'succeeded',
-      data : order
+      data: order
     });
   } catch (e) {
     next(e);
@@ -1114,15 +1115,13 @@ const getOrder = async (req, res, next) => {
     const orderId = req.params.id;
     if (!orderId)
       return next(ServerError.badRequest(400, 'order id not valid'));
-    const order = await Order.findById({ _id: { $regex: new RegExp(orderId, 'i')} });
+    const order = await Order.find({ _id: { $regex: new RegExp(orderId, 'i') } });
     if (!order) return next(ServerError.badRequest(400, 'order id not valid'));
-
-    const newOrderForm = await addMoreDataToOrder(order);
     res.status(200).json({
       ok: true,
       code: 200,
       message: 'succeeded',
-      data: newOrderForm,
+      data: order,
     });
   } catch (e) {
     next(e);
@@ -1134,16 +1133,15 @@ const getOrdersByBuyerId = async (req, res, next) => {
     if (!id)
       return next(ServerError.badRequest(400, 'order id not valid'));
     const orders = await ApiFeatures.pagination(
-      Order.find({ buyerId:  {$regex: new RegExp(id, 'i')}}),
+      Order.find({ buyerId: { $regex: new RegExp(id, 'i') } }),
       req.query
     );
-    const newOrdersForm = await addMoreDataToOrder(orders);
-    const totalLength = await Order.countDocuments({ buyerId:  {$regex: new RegExp(id, 'i')} });
+    const totalLength = await Order.countDocuments({ buyerId: { $regex: new RegExp(id, 'i') } });
     res.status(200).json({
       ok: true,
       code: 200,
       message: 'succeeded',
-      data: newOrdersForm,
+      data: orders,
       totalLength,
     });
   } catch (e) {
