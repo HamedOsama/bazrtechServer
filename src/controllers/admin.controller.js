@@ -1114,7 +1114,7 @@ const getOrder = async (req, res, next) => {
     const orderId = req.params.id;
     if (!orderId)
       return next(ServerError.badRequest(400, 'order id not valid'));
-    const order = await Order.findById({ _id: {$regex: new RegExp(orderId, 'i')} });
+    const order = await Order.findById({ _id: { $regex: new RegExp(orderId, 'i')} });
     if (!order) return next(ServerError.badRequest(400, 'order id not valid'));
 
     const newOrderForm = await addMoreDataToOrder(order);
