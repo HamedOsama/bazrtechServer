@@ -4,13 +4,18 @@ const validator = require('validator')
 
 const orderSchema = mongoose.Schema({
     buyerId: {
-        type: 'string',
+        type: String,
         required: true,
         trim :true
     },
     buyerPhone: {
         type: String,
         required: true
+    },
+    buyerName : {
+        type: String,
+        required: true,
+        trim :true
     },
     orderItems: [
         {
