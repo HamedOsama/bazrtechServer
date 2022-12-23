@@ -50,6 +50,10 @@ const orderSchema = mongoose.Schema({
             quantity: {
                 type: Number,
                 required: true
+            },
+            info:{
+                type:String,
+                trim : true
             }
         }
     ]
