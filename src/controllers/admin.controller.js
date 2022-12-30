@@ -1074,8 +1074,12 @@ const addMoreDataToOrder = async (orders) => {
 };
 const getAllOrders = async (req, res, next) => {
   try {
-    const orders = await ApiFeatures.pagination(Order.find({}), req.query);
-    const totalLength = await Order.countDocuments();
+    const filter = {...req.query}
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    excludedFields.forEach(el => delete filter[el]);
+    
+    const orders = await ApiFeatures.pagination(Order.find(filter), req.query);
+    const totalLength = await Order.countDocuments(filter);
     res.status(200).json({
       ok: true,
       code: 200,
@@ -1341,7 +1345,23 @@ const finishOrder = async (order, req, res, next) => {
 //   }
 // };
 
-
+const filterOrders = async(req,res,next)=>{
+  try {
+    console.log('filter')
+    const filter = req.query.state;
+    const orders  = await ApiFeatures.pagination(Order.find({orderState : filter}) , req.query)
+    const totalLength = await Order.countDocuments({orderState : filter})
+    res.status(200).json({
+      ok : true , 
+      status : 200,
+      message : 'succeeded',
+      data : orders,
+      totalLength
+    })
+  } catch (e) {
+    
+  }
+}
 
 const updateWithdrawal = async (req, res, next) => {
   try {
@@ -1689,6 +1709,7 @@ module.exports = {
   getAllOrders,
   getOrdersByBuyerId,
   updateOrder,
+  filterOrders,
   updateWithdrawal,
   getWithdrawalById,
   getWithdrawalsByBuyerId,
