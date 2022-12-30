@@ -203,8 +203,14 @@ const cancelOrder = async (order, req, res, next) => {
 
 const getUserOrders = async( req,res,next)=>{
   try {
-    const orders = await ApiFeatures.pagination(Order.find({buyerId : req.user.code , orderState : {$lte : 11}}) , req.query);
-    const totalLength = await Order.countDocuments({buyerId : req.user.code , orderState : {$lte : 11}});
+    const query = req.query.archived;
+    let orderState = '{"orderState" : { "$lt" : 11}}'
+    if(query === 'yes')
+    orderState = '{"orderState" : { "$gte" : 12}}'
+
+    console.log()
+    const orders = await ApiFeatures.pagination(Order.find({buyerId : req.user.code , ...JSON.parse(orderState)}) , req.query);
+    const totalLength = await Order.countDocuments({buyerId : req.user.code , ...JSON.parse(orderState)});
     res.status(200).json({
       ok : true,
       status : 200,
