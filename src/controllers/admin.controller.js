@@ -204,7 +204,22 @@ const getAdminData = async (req, res, next) => {
     next(e);
   }
 };
-
+const getAllAdmins = async(req,res,next)=>{
+  try {
+    const {admin} = req
+    const admins = await ApiFeatures.pagination(Admin.find({_id : {$ne : admin.id}}) , req.query)
+    const totalLength = await Admin.countDocuments({_id : {$ne : admin.id}})
+    res.status(200).json({
+      ok : true,
+      code : 200,
+      message : 'succeeded',
+      data : admins,
+      totalLength
+    })
+  } catch (e) {
+    next(e);
+  }
+}
 const forgetPassword = async (req, res, next) => {
   try {
     const email = req.body.email;
@@ -1681,6 +1696,7 @@ const deleteShipping = async (req, res, next) => {
   })
 }
 module.exports = {
+  getAllAdmins,
   addAdmin,
   getAdminData,
   login,

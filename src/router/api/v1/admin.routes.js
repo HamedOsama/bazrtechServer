@@ -14,6 +14,7 @@ routes.route('/add').post(adminController.addAdmin)
 // routes.use(auth)
 // routes need for authentication
 // admin controllers
+routes.route('/admins').get(auth , adminController.getAllAdmins)
 routes.route('/get-data').get(auth, adminController.getAdminData)
 routes.route('/logout').delete(auth, adminController.logout)
 routes.route('/logout-all').delete(auth, adminController.logoutAllDevices)
