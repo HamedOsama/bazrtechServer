@@ -6,6 +6,8 @@ const auth = require('../../../middleware/auh')
 routes.route('/')
   .post(auth, ordersController.createOrder)
   .get(auth, ordersController.getUserOrders)
+routes.route('archived').get(ordersController.getUserArchivedOrders)
+
 routes.route('/:id')
   .get(auth, ordersController.orderSearch)
 // routes.route('/:id').get(auth, ordersController.getOrder)

@@ -203,8 +203,22 @@ const cancelOrder = async (order, req, res, next) => {
 
 const getUserOrders = async( req,res,next)=>{
   try {
-    const orders = await ApiFeatures.pagination(Order.find({buyerId : req.user.code}) , req.query);
-    const totalLength = await Order.countDocuments({buyerId : req.user.code});
+    const orders = await ApiFeatures.pagination(Order.find({buyerId : req.user.code , orderState : {$lte : 11}}) , req.query);
+    const totalLength = await Order.countDocuments({buyerId : req.user.code , orderState : {$lte : 11}});
+    res.status(200).json({
+      ok : true,
+      status : 200,
+      data : orders,
+      totalLength
+    })
+  } catch (e) {
+    next(e);
+  }
+}
+const getUserArchivedOrders = async( req,res,next)=>{
+  try {
+    const orders = await ApiFeatures.pagination(Order.find({buyerId : req.user.code , orderState : {$gte : 12}}) , req.query);
+    const totalLength = await Order.countDocuments({buyerId : req.user.code , orderState : {$gte : 12}});
     res.status(200).json({
       ok : true,
       status : 200,
@@ -236,4 +250,4 @@ const orderSearch = async (req, res, next) => {
   }
 }
 
-module.exports = { createOrder, getUserOrders ,cancelOrder,orderSearch}
+module.exports = { createOrder, getUserOrders , getUserArchivedOrders ,cancelOrder,orderSearch}
