@@ -12,8 +12,8 @@ const adminSchema = mongoose.Schema({
     role:{
         type : String,
         required : true,
-        enum : ['admin','subAdmin','accountant'],
-        default : 'subAdmin'
+        enum : ['admin','offers','accountant'],
+        default : 'accountant'
     },
     email: {
         type: String,
