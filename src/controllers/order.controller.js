@@ -9,7 +9,7 @@ const createOrder = async (req, res, next) => {
     const validateQuantity = req?.body?.orderItems?.every(el => el.quantity > 0)
     if (!validateQuantity)
       return next(ServerError.badRequest(400, 'quantity must be positive number'))
-    const shippingData = await Shipping.findOne({ country : req.user.country });
+    const shippingData = await Shipping.findOne({ country: req.user.country });
     if (!shippingData)
       return next(ServerError.badRequest(400, 'غير متوفر شحن لهذه المنطقة'));
     const accessories = [];
@@ -153,15 +153,15 @@ const createOrder = async (req, res, next) => {
       productsPrice,
       totalPrice,
       shippingPrice,
-      buyerId : user.code,
+      buyerId: user.code,
       buyerPhone: user.phone,
       buyerName: user.name,
-      country : user.country,
-      city : user.city,
-      state : user.state,
-      street : user.street,
-      buildingNumber : user.buildingNumber,
-      apartmentNumber : user.apartmentNumber,
+      country: user.country,
+      city: user.city,
+      state: user.state,
+      street: user.street,
+      buildingNumber: user.buildingNumber,
+      apartmentNumber: user.apartmentNumber,
     })
     await order.save()
     res.status(201).json({
@@ -201,34 +201,38 @@ const cancelOrder = async (order, req, res, next) => {
   }
 }
 
-const getUserOrders = async( req,res,next)=>{
+const getUserOrders = async (req, res, next) => {
   try {
-    const query = req.query.archived;
-    let orderState = '{"orderState" : { "$lt" : 11}}'
-    if(query === 'yes')
-    orderState = '{"orderState" : { "$gte" : 12}}'
+    const query = req.query.status;
+    let orderState = '{ "$or" : [ {"orderState" : 1} , {"orderState" : 3},{ "orderState" : 4 } , {"orderState" : 5} , {"orderState" : 6} , {"orderState" : 7} , {"orderState" : 8} , {"orderState" : 9}, {"orderState" : 10}, {"orderState" : 11} , {"orderState" : 14} , {"orderState" : 15} , {"orderState" : 16}]}';
+    if (query === "archived")
+    orderState = '{ "$or" : [ {"orderState" : 2} , {"orderState" : 12},{ "orderState" : 13 } , {"orderState" : 17}]}'
+    if (query === "pending")
+      orderState = '{"orderState" : 0}'
+    if (query === 'ar')
+      orderState = '{"orderState" : { "$gte" : 12}}'
 
-    console.log()
-    const orders = await ApiFeatures.pagination(Order.find({buyerId : req.user.code , ...JSON.parse(orderState)}) , req.query);
-    const totalLength = await Order.countDocuments({buyerId : req.user.code , ...JSON.parse(orderState)});
+    // console.log(orderState)
+    const orders = await ApiFeatures.pagination(Order.find({ buyerId: req.user.code,  ...JSON.parse(orderState) }), req.query);
+    const totalLength = await Order.countDocuments({ buyerId: req.user.code, ...JSON.parse(orderState) });
     res.status(200).json({
-      ok : true,
-      status : 200,
-      data : orders,
+      ok: true,
+      status: 200,
+      data: orders,
       totalLength
     })
   } catch (e) {
     next(e);
   }
 }
-const getUserArchivedOrders = async( req,res,next)=>{
+const getUserArchivedOrders = async (req, res, next) => {
   try {
-    const orders = await ApiFeatures.pagination(Order.find({buyerId : req.user.code , orderState : {$gte : 12}}) , req.query);
-    const totalLength = await Order.countDocuments({buyerId : req.user.code , orderState : {$gte : 12}});
+    const orders = await ApiFeatures.pagination(Order.find({ buyerId: req.user.code, orderState: { $gte: 12 } }), req.query);
+    const totalLength = await Order.countDocuments({ buyerId: req.user.code, orderState: { $gte: 12 } });
     res.status(200).json({
-      ok : true,
-      status : 200,
-      data : orders,
+      ok: true,
+      status: 200,
+      data: orders,
       totalLength
     })
   } catch (e) {
@@ -243,12 +247,12 @@ const orderSearch = async (req, res, next) => {
     const orderId = req.params.id;
     if (!orderId || orderId.length !== 24)
       return next(ServerError.badRequest(400, 'order id not valid'));
-    const order = await Order.find({ _id:orderId, buyerId : user.code});
+    const order = await Order.find({ _id: orderId, buyerId: user.code });
     if (!order)
       return next(ServerError.badRequest(400, 'order id not valid'));
     res.status(200).json({
-      ok : true,
-      status : 200,
+      ok: true,
+      status: 200,
       data: order
     })
   } catch (e) {
@@ -256,4 +260,4 @@ const orderSearch = async (req, res, next) => {
   }
 }
 
-module.exports = { createOrder, getUserOrders , getUserArchivedOrders ,cancelOrder,orderSearch}
+module.exports = { createOrder, getUserOrders, getUserArchivedOrders, cancelOrder, orderSearch }
