@@ -1067,6 +1067,13 @@
   "resolved" "https://registry.npmjs.org/array-flatten/-/array-flatten-1.1.1.tgz"
   "version" "1.1.1"
 
+"async@^2.5.0":
+  "integrity" "sha512-mzo5dfJYwAn29PeiJ0zvwTo04zj8HDJj0Mn8TD7sno7q12prdbnasKJHhkm2c1LgrhlJ0teaea8860oxi51mGA=="
+  "resolved" "https://registry.npmjs.org/async/-/async-2.6.4.tgz"
+  "version" "2.6.4"
+  dependencies:
+    "lodash" "^4.17.14"
+
 "available-typed-arrays@^1.0.5":
   "integrity" "sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw=="
   "resolved" "https://registry.npmjs.org/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz"
@@ -1807,6 +1814,11 @@
   "resolved" "https://registry.npmjs.org/lodash.once/-/lodash.once-4.1.1.tgz"
   "version" "4.1.1"
 
+"lodash@^4.17.14", "lodash@^4.17.20":
+  "integrity" "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg=="
+  "resolved" "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
+  "version" "4.17.21"
+
 "media-typer@0.3.0":
   "integrity" "sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ=="
   "resolved" "https://registry.npmjs.org/media-typer/-/media-typer-0.3.0.tgz"
@@ -1888,6 +1900,14 @@
     "@aws-sdk/credential-providers" "^3.186.0"
     "saslprep" "^1.0.3"
 
+"mongoose-sequence@^5.3.1":
+  "integrity" "sha512-kQB1ctCdAQT8YdQzoHV0CpBRsO4RNVy03SOkzM6TQKBbGBs1ZgVS4UlKsuvBPaiPt9q5tKgQZvorGJ1awbHDqA=="
+  "resolved" "https://registry.npmjs.org/mongoose-sequence/-/mongoose-sequence-5.3.1.tgz"
+  "version" "5.3.1"
+  dependencies:
+    "async" "^2.5.0"
+    "lodash" "^4.17.20"
+
 "mongoose-timestamp@^0.6.0":
   "integrity" "sha512-H0f/x2z7yvIiijP3UaE6bsSTP71WqVxn8GR8OOYKUSWmf+U1mD1K+QeEQ5BlYl6zbp/l/19F8sHXA/vUAyDnRg=="
   "resolved" "https://registry.npmjs.org/mongoose-timestamp/-/mongoose-timestamp-0.6.0.tgz"
@@ -1895,7 +1915,7 @@
   dependencies:
     "defaults" "^1.0.3"
 
-"mongoose@^6.8.0":
+"mongoose@^6.8.0", "mongoose@>=4":
   "integrity" "sha512-zlUfjcLya3pLfLTxwyH5S9bZUolJWGKF2M7PEV0118jv4VWHR/krjb6LIWu1RPQN2rwYmnmjjzJLVhbhmHqSmg=="
   "resolved" "https://registry.npmjs.org/mongoose/-/mongoose-6.8.0.tgz"
   "version" "6.8.0"

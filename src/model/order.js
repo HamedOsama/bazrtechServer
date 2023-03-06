@@ -1,21 +1,24 @@
 const mongoose = require('mongoose')
 const timestamps = require('mongoose-timestamp')
+
 const validator = require('validator')
+
+const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 const orderSchema = mongoose.Schema({
     buyerId: {
         type: String,
         required: true,
-        trim :true
+        trim: true
     },
     buyerPhone: {
         type: String,
         required: true
     },
-    buyerName : {
+    buyerName: {
         type: String,
         required: true,
-        trim :true
+        trim: true
     },
     orderItems: [
         {
@@ -26,22 +29,22 @@ const orderSchema = mongoose.Schema({
             link: {
                 type: String,
                 required: true,
-                trim : true
+                trim: true
             },
             category: {
                 type: String,
                 required: true,
-                trim : true
+                trim: true
             },
             subCategory: {
                 type: String,
                 required: true,
-                trim : true
+                trim: true
             },
             color: {
                 type: String,
                 required: true,
-                trim : true
+                trim: true
             },
             weight: {
                 type: Number,
@@ -50,15 +53,15 @@ const orderSchema = mongoose.Schema({
             size: {
                 type: String,
                 required: true,
-                trim : true
+                trim: true
             },
             quantity: {
                 type: Number,
                 required: true
             },
-            info:{
-                type:String,
-                trim : true
+            info: {
+                type: String,
+                trim: true
             }
         }
     ]
@@ -115,7 +118,8 @@ const orderSchema = mongoose.Schema({
         type: Number,
         default: 0
     },
-})
+}, { _id: false })
 orderSchema.plugin(timestamps)
+orderSchema.plugin(AutoIncrement)
 const Order = mongoose.model('orders', orderSchema)
 module.exports = Order
