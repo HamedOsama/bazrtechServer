@@ -204,16 +204,16 @@ const getAdminData = async (req, res, next) => {
     next(e);
   }
 };
-const getAllAdmins = async(req,res,next)=>{
+const getAllAdmins = async (req, res, next) => {
   try {
-    const {admin} = req
-    const admins = await ApiFeatures.pagination(Admin.find({_id : {$ne : admin.id}}) , req.query)
-    const totalLength = await Admin.countDocuments({_id : {$ne : admin.id}})
+    const { admin } = req
+    const admins = await ApiFeatures.pagination(Admin.find({ _id: { $ne: admin.id } }), req.query)
+    const totalLength = await Admin.countDocuments({ _id: { $ne: admin.id } })
     res.status(200).json({
-      ok : true,
-      code : 200,
-      message : 'succeeded',
-      data : admins,
+      ok: true,
+      code: 200,
+      message: 'succeeded',
+      data: admins,
       totalLength
     })
   } catch (e) {
@@ -1089,10 +1089,10 @@ const addMoreDataToOrder = async (orders) => {
 };
 const getAllOrders = async (req, res, next) => {
   try {
-    const filter = {...req.query}
+    const filter = { ...req.query }
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach(el => delete filter[el]);
-    
+
     const orders = await ApiFeatures.pagination(Order.find(filter), req.query);
     const totalLength = await Order.countDocuments(filter);
     res.status(200).json({
@@ -1132,9 +1132,9 @@ const updateOrder = async (req, res, next) => {
 const getOrder = async (req, res, next) => {
   try {
     const orderId = req.params.id;
-    if (!orderId || orderId.length !== 24)
-      return next(ServerError.badRequest(400, 'order id not valid'));
-    const order = await Order.findById({ _id: orderId } );
+    if (!orderId)
+      return next(ServerError.badRequest(400, 'order id is required'));
+    const order = await Order.findById({ _id: orderId });
     if (!order) return next(ServerError.badRequest(400, 'order id not valid'));
     res.status(200).json({
       ok: true,
@@ -1360,21 +1360,21 @@ const finishOrder = async (order, req, res, next) => {
 //   }
 // };
 
-const filterOrders = async(req,res,next)=>{
+const filterOrders = async (req, res, next) => {
   try {
     console.log('filter')
     const filter = req.query.state;
-    const orders  = await ApiFeatures.pagination(Order.find({orderState : filter}) , req.query)
-    const totalLength = await Order.countDocuments({orderState : filter})
+    const orders = await ApiFeatures.pagination(Order.find({ orderState: filter }), req.query)
+    const totalLength = await Order.countDocuments({ orderState: filter })
     res.status(200).json({
-      ok : true , 
-      status : 200,
-      message : 'succeeded',
-      data : orders,
+      ok: true,
+      status: 200,
+      message: 'succeeded',
+      data: orders,
       totalLength
     })
   } catch (e) {
-    
+
   }
 }
 
