@@ -206,14 +206,14 @@ const getUserOrders = async (req, res, next) => {
     const query = req.query.status;
     let orderState = '{ "$or" : [ {"orderState" : 1} , {"orderState" : 3},{ "orderState" : 4 } , {"orderState" : 5} , {"orderState" : 6} , {"orderState" : 7} , {"orderState" : 8} , {"orderState" : 9}, {"orderState" : 10}, {"orderState" : 11} , {"orderState" : 14} , {"orderState" : 15} , {"orderState" : 16}]}';
     if (query === "archived")
-    orderState = '{ "$or" : [ {"orderState" : 2} , {"orderState" : 12},{ "orderState" : 13 } , {"orderState" : 17}]}'
+      orderState = '{ "$or" : [ {"orderState" : 2} , {"orderState" : 12},{ "orderState" : 13 } , {"orderState" : 17}]}'
     if (query === "pending")
       orderState = '{"orderState" : 0}'
     if (query === 'ar')
       orderState = '{"orderState" : { "$gte" : 12}}'
 
     // console.log(orderState)
-    const orders = await ApiFeatures.pagination(Order.find({ buyerId: req.user.code,  ...JSON.parse(orderState) }), req.query);
+    const orders = await ApiFeatures.pagination(Order.find({ buyerId: req.user.code, ...JSON.parse(orderState) }), req.query);
     const totalLength = await Order.countDocuments({ buyerId: req.user.code, ...JSON.parse(orderState) });
     res.status(200).json({
       ok: true,
@@ -245,11 +245,11 @@ const orderSearch = async (req, res, next) => {
   try {
     const user = req.user;
     const orderId = req.params.id;
-    if (!orderId || orderId.length !== 24)
+    if (!orderId)
       return next(ServerError.badRequest(400, 'order id not valid'));
     const order = await Order.find({ _id: orderId, buyerId: user.code });
     if (!order)
-      return next(ServerError.badRequest(400, 'order id not valid'));
+      return next(ServerError.badRequest(400, 'order id don\'t belong to any order'));
     res.status(200).json({
       ok: true,
       status: 200,
