@@ -1135,7 +1135,7 @@ const getOrder = async (req, res, next) => {
     if (!orderId)
       return next(ServerError.badRequest(400, 'order id is required'));
     const order = await Order.findById({ _id: orderId });
-    if (!order) return next(ServerError.badRequest(400, 'order id not valid'));
+    if (!order) return next(ServerError.badRequest(400, 'order id don\'t belong to any order'));
     res.status(200).json({
       ok: true,
       code: 200,
