@@ -1092,7 +1092,7 @@ const getAllOrders = async (req, res, next) => {
     const filter = { ...req.query }
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach(el => delete filter[el]);
-
+    console.log(filter)
     const orders = await ApiFeatures.pagination(Order.find(filter), req.query);
     const totalLength = await Order.countDocuments(filter);
     res.status(200).json({
@@ -1110,7 +1110,7 @@ const getAllOrders = async (req, res, next) => {
 const updateOrder = async (req, res, next) => {
   try {
     const orderId = req.params.id;
-    if (!orderId || orderId.length < 24)
+    if (!orderId )
       return next(ServerError.badRequest(400, 'order id not valid'));
     const order = await Order.findById({ _id: orderId });
     if (!order) return next(ServerError.badRequest(400, 'order id not valid'));
