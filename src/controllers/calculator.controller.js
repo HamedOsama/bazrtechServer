@@ -15,83 +15,83 @@ const calculateShipping = async (req, res, next) => {
       total = price + shippingData[category];
     }
     if (category === 'clothes') {
-      if (weight > 0 && weight < 1)
+      if (weight > 0 && weight <= 1)
         total = price + shippingData.clothes.one
-      if (weight >= 1 && weight < 2)
+      if (weight > 1 && weight <= 2)
         total = price + shippingData.clothes.two
-      if (weight >= 2 && weight < 3)
+      if (weight > 2 && weight <= 3)
         total = price + shippingData.clothes.three
-      if (weight >= 3 && weight < 4)
+      if (weight > 3 && weight <= 4)
         total = price + shippingData.clothes.four
-      if (weight >= 4 && weight < 10)
+      if (weight > 4 && weight < 5)
         total = price + (weight * shippingData.clothes.five)
-      if (weight >= 10)
+      if (weight > 5)
         total = price + (weight * shippingData.clothes.six)
     }
     if (category === 'makeUp') {
-      if (weight > 0 && weight < 0.5)
+      if (weight > 0 && weight <= 0.5)
         total = price + shippingData.makeUp.half
-      if (weight >= 0.5 && weight < 1)
+      if (weight > 0.5 && weight <= 1)
         total = price + shippingData.makeUp.one
-      if (weight >= 1 && weight < 2)
+      if (weight > 1 && weight <= 2)
         total = price + shippingData.makeUp.two
-      if (weight >= 2 && weight < 3)
+      if (weight > 2 && weight <= 3)
         total = price + shippingData.makeUp.three
-      if (weight >= 3 && weight < 4)
+      if (weight > 3 && weight <= 4)
         total = price + shippingData.makeUp.four
-      if (weight >= 4 && weight < 5)
+      if (weight > 4 && weight <= 5)
         total = price + shippingData.makeUp.five
-      if (weight >= 5)
+      if (weight > 5)
         total = price + (weight * shippingData.makeUp.six)
     }
     if (category === 'carParts') {
-      if (weight > 0 && weight < 1)
+      if (weight > 0 && weight <= 1)
         total = price + (weight * shippingData.carParts.one)
-      if (weight >= 1 && weight < 2)
+      if (weight > 1 && weight <= 2)
         total = price + (weight * shippingData.carParts.two)
-      if (weight >= 2)
+      if (weight > 2)
         total = price + (weight * shippingData.carParts.three)
     }
     if (category === 'foodSupplements') {
-      if (weight > 0 && weight < 0.5)
+      if (weight > 0 && weight <= 0.5)
         total = price + shippingData.foodSupplements.half
-      if (weight >= 0.5 && weight < 1)
+      if (weight > 0.5 && weight <= 1)
         total = price + shippingData.foodSupplements.one
-      if (weight >= 1 && weight < 2)
+      if (weight > 1 && weight <= 2)
         total = price + shippingData.foodSupplements.two
-      if (weight >= 2 && weight < 3)
+      if (weight > 2 && weight <= 3)
         total = price + shippingData.foodSupplements.three
-      if (weight >= 3 && weight < 4)
+      if (weight > 3 && weight <= 4)
         total = price + shippingData.foodSupplements.four
-      if (weight >= 4)
+      if (weight > 4)
         total = price + (weight * shippingData.foodSupplements.five)
     }
     if (category === 'iron') {
-      if (weight > 0 && weight < 1)
+      if (weight > 0 && weight <= 1)
         total = price + shippingData.iron.one
-      if (weight >= 1 && weight < 2)
+      if (weight > 1 && weight <= 2)
         total = price + shippingData.iron.two
-      if (weight >= 2 && weight < 3)
+      if (weight > 2 && weight <= 3)
         total = price + shippingData.iron.three
-      if (weight >= 3 && weight < 5)
+      if (weight > 3 && weight <= 4)
         total = price + (weight * shippingData.iron.four)
-      if (weight >= 5 && weight < 10)
+      if (weight > 4 && weight <= 5)
         total = price + (weight * shippingData.iron.five)
-      if (weight >= 10)
+      if (weight > 5)
         total = price + (weight * shippingData.iron.six)
     }
     if (category === 'other') {
-      if (weight > 0 && weight < 1)
+      if (weight > 0 && weight <= 1)
         total = price + shippingData.other.one
-      if (weight >= 1 && weight < 2)
+      if (weight > 1 && weight <= 2)
         total = price + shippingData.other.two
-      if (weight >= 2 && weight < 3)
+      if (weight > 2 && weight <= 3)
         total = price + shippingData.other.three
-      if (weight >= 3 && weight < 5)
+      if (weight > 3 && weight <= 4)
         total = price + shippingData.other.four
-      if (weight >= 5 && weight < 10)
+      if (weight > 4 && weight <= 5)
         total = price + (weight * shippingData.other.five)
-      if (weight >= 10)
+      if (weight > 5)
         total = price + (weight * shippingData.other.six)
     }
     // total *= quantity;
