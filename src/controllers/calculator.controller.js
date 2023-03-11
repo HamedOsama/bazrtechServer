@@ -94,7 +94,7 @@ const calculateShipping = async (req, res, next) => {
       if (weight >= 10)
         total = price + (weight * shippingData.other.six)
     }
-    total *= quantity;
+    // total *= quantity;
     res.status(200).json({
       ok: true,
       status: 200,
