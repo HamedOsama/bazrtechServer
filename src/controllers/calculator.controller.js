@@ -23,7 +23,7 @@ const calculateShipping = async (req, res, next) => {
         total = price + shippingData.clothes.three
       if (weight > 3 && weight <= 4)
         total = price + shippingData.clothes.four
-      if (weight > 4 && weight < 5)
+      if (weight > 4 && weight <= 5)
         total = price + (weight * shippingData.clothes.five)
       if (weight > 5)
         total = price + (weight * shippingData.clothes.six)
