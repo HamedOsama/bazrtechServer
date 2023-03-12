@@ -11,7 +11,7 @@ const calculateShipping = async (req, res, next) => {
     const multiply = ['accessories', 'shoes', 'bags', 'electronics', 'homeApplicants', 'furniture']
     let total = 0
     if (multiply.includes(category)) {
-      total = price + shippingData[category];
+      total = price + (quantity * shippingData[category]);
     }
     if (category === 'clothes') {
       if (weight > 0 && weight < 1)
